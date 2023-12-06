@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Message Encoder/Decoder</title>
+    <link rel="stylesheet" type="text/css" href="/assets/styles.css" />
+  </head>
+  <body>
+    <form id="messageForm">
+      <label for="headers"
+        >Headers (Format: key:value, separated by new lines):</label
+      ><br />
+      <textarea id="headers" name="headers" rows="4" cols="50"></textarea><br />
+      <span id="headersError" style="color: red"></span><br />
+      <label for="payload">Payload:</label><br />
+      <input type="text" id="payload" name="payload" /><br />
+      <span id="payloadError" style="color: red"></span><br />
+      <span id="encodOrDecodeError" style="color: red"></span><br />
+      <input type="submit" value="Encode and Decode" />
+    </form>
+    <h2>Encoded Message:</h2>
+    <pre id="encoded"></pre>
+    <h2>Decoded Message:</h2>
+    <pre id="decoded"></pre>
+
+    <script src="/src/encode-decode.js"></script>
+    <script src="/src/validation.js"></script>
+    <script>
+      const messageForm = document.getElementById("messageForm");
+      const headersInput = document.getElementById("headers");
+      const payloadInput = document.getElementById("payload");
+      const encodedPre = document.getElementById("encoded");
+      const decodedPre = document.getElementById("decoded");
+
+      const codec = new DataPacket();
+
+      messageForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        try {
+          const errorMessage = validateForm(headersInput, payloadInput);
+          if (errorMessage) {
+            return;
+          }
+
+          const message = new Message();
+          message.payload = new TextEncoder().encode(payloadInput.value);
+          headersInput.value.split("\n").forEach((header) => {
+            const [key, value] = header.split(":");
+            message.headers[key.trim()] = value.trim();
+          });
+
+          document.getElementById("encodOrDecodeError").textContent = "";
+          const encodedMessage = codec.encode(message);
+          if (typeof encodedMessage === "string") {
+            document.getElementById("encodOrDecodeError").textContent =
+              encodedMessage;
+            return;
+          }
+
+          encodedPre.textContent = Array.from(encodedMessage).join(", ");
+
+          let decodedMessage;
+          try {
+            decodedMessage = codec.decode(encodedMessage);
+          } catch (error) {
+            document.getElementById("encodOrDecodeError").textContent =
+              "Decoding error: " + error.message;
+            return;
+          }
+
+          decodedPre.textContent = `Headers: ${JSON.stringify(
+            decodedMessage.headers,
+            null,
+            2
+          )}\nPayload: ${new TextDecoder().decode(decodedMessage.payload)}`;
+        } catch (error) {
+          // Handle any other errors
+          console.error("Unexpected error:", error);
+        }
+      });
+    </script>
+  </body>
+</html>

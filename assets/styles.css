@@ -1,0 +1,52 @@
+body {
+  font-family: Arial, sans-serif;
+  overflow-y: auto;
+}
+#messageForm {
+  margin: 0 auto;
+  width: 50%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f8f8f8;
+}
+#messageForm label {
+  display: block;
+  margin: 10px 0;
+  font-weight: bold;
+}
+#messageForm textarea,
+#messageForm input[type="text"] {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+#messageForm input[type="submit"] {
+  display: block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  background-color: #007bff;
+  cursor: pointer;
+}
+#messageForm input[type="submit"]:hover {
+  background-color: #0056b3;
+}
+#messageForm span {
+  margin-top: 5px;
+}
+pre {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f8f8f8;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
